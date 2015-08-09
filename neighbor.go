@@ -6,7 +6,7 @@ import "github.com/yukihir0/hbapi"
 type Neighbor struct {
 	User            string
 	CommonBookmarks []hbapi.Entry
-	TotalBookmarks  []hbapi.Entry
+	AllBookmarks    []hbapi.Entry
 }
 
 // GetCommonBookmarkCount return common bookmark count.
@@ -14,12 +14,12 @@ func (n Neighbor) GetCommonBookmarkCount() int {
 	return len(n.CommonBookmarks)
 }
 
-// GetTotalBookmarkCount return total bookmark count.
-func (n Neighbor) GetTotalBookmarkCount() int {
-	return len(n.TotalBookmarks)
+// GetAllBookmarkCount return all bookmark count.
+func (n Neighbor) GetAllBookmarkCount() int {
+	return len(n.AllBookmarks)
 }
 
 // GetSimilarity return similarity of neighbor.
 func (n Neighbor) GetSimilarity() float64 {
-	return float64(n.GetCommonBookmarkCount()) / float64(n.GetTotalBookmarkCount())
+	return float64(n.GetCommonBookmarkCount()) / float64(n.GetAllBookmarkCount())
 }

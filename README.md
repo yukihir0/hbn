@@ -23,7 +23,7 @@ for _, neighbor := range neighbors {
     neighbor.User,
     neighbor.GetSimilarity()*100,
     neighbor.GetCommonBookmarkCount(),
-    neighbor.GetTotalBookmarkCount(),
+    neighbor.GetAllBookmarkCount(),
   )
 }
 ```
@@ -41,7 +41,7 @@ for _, neighbor := range neighbors {
     neighbor.User,
     neighbor.GetSimilarity()*100,
     neighbor.GetCommonBookmarkCount(),
-    neighbor.GetTotalBookmarkCount(),
+    neighbor.GetAllBookmarkCount(),
   )
 }
 ```
@@ -58,7 +58,7 @@ for _, neighbor := range neighbors {
     neighbor.User,
     neighbor.GetSimilarity()*100,
     neighbor.GetCommonBookmarkCount(),
-    neighbor.GetTotalBookmarkCount(),
+    neighbor.GetAllBookmarkCount(),
   )
 }
 ```

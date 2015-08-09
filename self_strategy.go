@@ -5,7 +5,7 @@ type SelfStrategy struct {
 	defaultStrategy
 }
 
-// NewSelfStrategy initialize Selfstrategy.
+// NewSelfStrategy initialize SelfStrategy.
 func NewSelfStrategy(user string) SelfStrategy {
 	return SelfStrategy{newDefaultStrategy(user)}
 }

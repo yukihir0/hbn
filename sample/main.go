@@ -11,9 +11,9 @@ func main() {
 	strategy := hbn.NewSelfStrategy(user)
 	//strategy := hbn.NewRelatedStrategy(user)
 	//strategy := hbn.NewHotEntryStrategy()
-	//strategy.User = user
-	//strategy.TotalPages = 2
-	//strategy.MaxParallelRequest = 20
+	//strategy.SetUser(user)
+	//strategy.SetTotalPages(2)
+	//strategy.SetMaxParallelRequest(10)
 
 	neighbors := hbn.SearchNeighbors(strategy)
 
@@ -25,7 +25,7 @@ func main() {
 				neighbor.User,
 				neighbor.GetSimilarity()*100,
 				neighbor.GetCommonBookmarkCount(),
-				neighbor.GetTotalBookmarkCount(),
+				neighbor.GetAllBookmarkCount(),
 			)
 			for _, entry := range neighbor.CommonBookmarks {
 				fmt.Printf(" - %s\n", entry.Title)

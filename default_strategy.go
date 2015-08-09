@@ -8,16 +8,37 @@ import (
 )
 
 type defaultStrategy struct {
-	User               string
-	TotalPages         int
-	MaxParallelRequest int
+	user               string
+	totalPages         int
+	maxParallelRequest int
 }
 
 func newDefaultStrategy(user string) defaultStrategy {
 	return defaultStrategy{
-		User:               user,
-		TotalPages:         1,
-		MaxParallelRequest: runtime.GOMAXPROCS(runtime.NumCPU()),
+		user:               user,
+		totalPages:         1,
+		maxParallelRequest: runtime.GOMAXPROCS(runtime.NumCPU()),
+	}
+}
+
+// SetUser set user.
+func (s *defaultStrategy) SetUser(user string) {
+	if user != "" {
+		s.user = user
+	}
+}
+
+// SetTotalPages set totalPages.
+func (s *defaultStrategy) SetTotalPages(pages int) {
+	if pages > 0 {
+		s.totalPages = pages
+	}
+}
+
+// SetMaxParallelRequest set maxParallelRequest.
+func (s *defaultStrategy) SetMaxParallelRequest(max int) {
+	if max > 0 {
+		s.maxParallelRequest = max
 	}
 }
 
@@ -25,10 +46,10 @@ var empty struct{}
 
 func (s defaultStrategy) getBookmarks() []string {
 	bookmarksChan := make(chan []string)
-	limitChan := make(chan struct{}, s.MaxParallelRequest)
+	limitChan := make(chan struct{}, s.maxParallelRequest)
 
 	go func() {
-		for page := 0; page < s.TotalPages; page++ {
+		for page := 0; page < s.totalPages; page++ {
 			select {
 			case limitChan <- empty:
 				go func(user string, page int) {
@@ -47,53 +68,48 @@ func (s defaultStrategy) getBookmarks() []string {
 					}
 					bookmarksChan <- urls
 					<-limitChan
-				}(s.User, page)
+				}(s.user, page)
 			}
 		}
 	}()
 
 	bookmarks := []string{}
-	for i := 0; i < s.TotalPages; i++ {
+	for i := 0; i < s.totalPages; i++ {
 		bookmarks = append(bookmarks, <-bookmarksChan...)
 	}
 
 	return bookmarks
 }
 
-func (s defaultStrategy) getRelatedBookmarks() []string {
-	bookmarks := s.getBookmarks()
+func (s defaultStrategy) calcNeighbors(bookmarks []string) Neighbors {
 	infoChan := s.getEntryInfoChannel(bookmarks)
 
-	relatedBookmarks := []string{}
+	all := []hbapi.Entry{}
+	common := map[string][]hbapi.Entry{}
 	for i := 0; i < len(bookmarks); i++ {
-		entry := <-infoChan
-		for _, related := range entry.Related {
-			relatedBookmarks = append(relatedBookmarks, related.URL)
+		info := <-infoChan
+		all = append(all, info.Entry)
+		for _, bookmark := range info.Bookmarks {
+			common[bookmark.User] = append(common[bookmark.User], info.Entry)
 		}
 	}
 
-	return relatedBookmarks
-}
-
-func (s defaultStrategy) getHotEntryBookmarks() []string {
-	bookmarks := []string{}
-
-	params := hbapi.NewHotEntryFeedParams()
-	feed, err := hbapi.GetHotEntryFeed(params)
-	if err != nil {
-		return bookmarks
+	neighbors := Neighbors{}
+	for k, v := range common {
+		neighbors = append(neighbors, Neighbor{
+			User:            k,
+			CommonBookmarks: v,
+			AllBookmarks:    all,
+		})
 	}
+	sort.Sort(neighbors)
 
-	for _, item := range feed.Items {
-		bookmarks = append(bookmarks, item.Link)
-	}
-
-	return bookmarks
+	return neighbors
 }
 
 func (s defaultStrategy) getEntryInfoChannel(urls []string) <-chan hbapi.EntryInfo {
 	infoChan := make(chan hbapi.EntryInfo)
-	limitChan := make(chan struct{}, s.MaxParallelRequest)
+	limitChan := make(chan struct{}, s.maxParallelRequest)
 
 	go func() {
 		for _, url := range urls {
@@ -115,30 +131,4 @@ func (s defaultStrategy) getEntryInfoChannel(urls []string) <-chan hbapi.EntryIn
 	}()
 
 	return infoChan
-}
-
-func (s defaultStrategy) calcNeighbors(bookmarks []string) Neighbors {
-	infoChan := s.getEntryInfoChannel(bookmarks)
-
-	total := []hbapi.Entry{}
-	common := map[string][]hbapi.Entry{}
-	for i := 0; i < len(bookmarks); i++ {
-		info := <-infoChan
-		total = append(total, info.Entry)
-		for _, bookmark := range info.Bookmarks {
-			common[bookmark.User] = append(common[bookmark.User], info.Entry)
-		}
-	}
-
-	neighbors := Neighbors{}
-	for k, v := range common {
-		neighbors = append(neighbors, Neighbor{
-			User:            k,
-			CommonBookmarks: v,
-			TotalBookmarks:  total,
-		})
-	}
-	sort.Sort(neighbors)
-
-	return neighbors
 }
