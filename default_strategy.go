@@ -14,11 +14,12 @@ type defaultStrategy struct {
 }
 
 func newDefaultStrategy(user string) defaultStrategy {
-	return defaultStrategy{
-		user:               user,
+	s := defaultStrategy{
 		totalPages:         1,
 		maxParallelRequest: runtime.GOMAXPROCS(runtime.NumCPU()),
 	}
+	s.SetUser(user)
+	return s
 }
 
 // SetUser set user.
