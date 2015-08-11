@@ -11,6 +11,7 @@ func main() {
 	strategy := hbn.NewSelfStrategy(user)
 	//strategy := hbn.NewRelatedStrategy(user)
 	//strategy := hbn.NewHotEntryStrategy()
+	//strategy := hbn.NewFavoriteStrategy(user)
 	//strategy.SetUser(user)
 	//strategy.SetTotalPages(2)
 	//strategy.SetMaxParallelRequest(10)
