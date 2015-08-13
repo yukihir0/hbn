@@ -81,6 +81,24 @@ for _, neighbor := range neighbors {
 }
 ```
 
+### search neighbors by search bookmark.
+
+```
+query := "golang"
+strategy := hbn.NewSearchStrategy(query)
+neighbors := hbn.SearchNeighbors(strategy)
+
+for _, neighbor := range neighbors {
+  fmt.Printf(
+    "[%s] : %.1f%% (%d/%d)\n",
+    neighbor.User,
+    neighbor.GetSimilarity()*100,
+    neighbor.GetCommonBookmarkCount(),
+    neighbor.GetAllBookmarkCount(),
+  )
+}
+```
+
 ## License
 
 Copyright &copy; 2015 yukihir0

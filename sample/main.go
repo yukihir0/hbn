@@ -12,6 +12,7 @@ func main() {
 	//strategy := hbn.NewRelatedStrategy(user)
 	//strategy := hbn.NewHotEntryStrategy()
 	//strategy := hbn.NewFavoriteStrategy(user)
+	//strategy := hbn.NewSearchStrategy("golang")
 	//strategy.SetUser(user)
 	//strategy.SetTotalPages(2)
 	//strategy.SetMaxParallelRequest(10)
