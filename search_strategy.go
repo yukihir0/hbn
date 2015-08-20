@@ -10,28 +10,29 @@ type SearchStrategy struct {
 
 // NewSearchStrategy initialize SearchStrategy.
 func NewSearchStrategy(query string) SearchStrategy {
-	return SearchStrategy{
+	s := SearchStrategy{
 		defaultStrategy: newDefaultStrategy(""),
-		query:           query,
 	}
+	s.SetQuery(query)
+	return s
 }
 
 // SetUser set user.
-func (s SearchStrategy) SetUser(user string) {
+func (s *SearchStrategy) SetUser(user string) {
 	panic("SearchStrategy: can not use user parameter.")
 }
 
 // SetTotalPages set totalPages.
-func (s SearchStrategy) SetTotalPages(pages int) {
+func (s *SearchStrategy) SetTotalPages(pages int) {
 	panic("SearchStrategy: can not use totalPages parameter.")
 }
 
 // SetMaxParallelRequest set maxParallelRequest.
-func (s SearchStrategy) SetMaxParallelRequest(max int) {
+func (s *SearchStrategy) SetMaxParallelRequest(max int) {
 	panic("SearchStrategy: can not use maxParallelRequest parameter.")
 }
 
-func (s SearchStrategy) SetQuery(query string) {
+func (s *SearchStrategy) SetQuery(query string) {
 	if query != "" {
 		s.query = query
 	}

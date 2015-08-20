@@ -13,17 +13,17 @@ func NewHotEntryStrategy() HotEntryStrategy {
 }
 
 // SetUser set user.
-func (s HotEntryStrategy) SetUser(user string) {
+func (s *HotEntryStrategy) SetUser(user string) {
 	panic("HotEntryStrategy: can not use user parameter.")
 }
 
 // SetTotalPages set totalPages.
-func (s HotEntryStrategy) SetTotalPages(pages int) {
+func (s *HotEntryStrategy) SetTotalPages(pages int) {
 	panic("HotEntryStrategy: can not use totalPages parameter.")
 }
 
 // SetMaxParallelRequest set maxParallelRequest.
-func (s HotEntryStrategy) SetMaxParallelRequest(max int) {
+func (s *HotEntryStrategy) SetMaxParallelRequest(max int) {
 	panic("HotEntryStrategy: can not use maxParallelRequest parameter.")
 }
 
