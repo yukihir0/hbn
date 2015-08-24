@@ -30,3 +30,7 @@ func (n Neighbors) Exclude(users []string) Neighbors {
 	}
 	return excluded
 }
+
+func (n Neighbors) Top(max int) Neighbors {
+	return n[0:max]
+}
