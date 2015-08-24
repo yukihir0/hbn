@@ -14,29 +14,24 @@ func main() {
 	//strategy := hbn.NewFavoriteStrategy(user)
 	//strategy := hbn.NewSearchStrategy("golang")
 	//strategy.SetUser(user)
-	//strategy.SetTotalPages(2)
+	strategy.SetTotalPages(10)
 	//strategy.SetMaxParallelRequest(10)
 
 	neighbors := hbn.SearchNeighbors(strategy)
+	excluded := neighbors.Exclude([]string{user})
+	top := excluded.Top(20)
 
-	limit := 20
-	for _, neighbor := range neighbors {
-		if neighbor.User != user {
-			fmt.Printf(
-				"[%s] : %.1f%% (%d/%d)\n",
-				neighbor.User,
-				neighbor.GetSimilarity()*100,
-				neighbor.GetCommonBookmarkCount(),
-				neighbor.GetAllBookmarkCount(),
-			)
-			for _, entry := range neighbor.CommonBookmarks {
-				fmt.Printf(" - %s\n", entry.Title)
-			}
-			fmt.Println()
+	for _, neighbor := range top {
+		fmt.Printf(
+			"[%s] : %.1f%% (%d/%d)\n",
+			neighbor.User,
+			neighbor.GetSimilarity()*100,
+			neighbor.GetCommonBookmarkCount(),
+			neighbor.GetAllBookmarkCount(),
+		)
+		for _, entry := range neighbor.CommonBookmarks {
+			fmt.Printf(" - %s\n", entry.Title)
 		}
-		limit--
-		if limit <= 0 {
-			break
-		}
+		fmt.Println()
 	}
 }
