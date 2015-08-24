@@ -20,3 +20,13 @@ func (n Neighbors) Less(i, j int) bool {
 	}
 	return ret
 }
+
+func (n Neighbors) Exclude(users []string) Neighbors {
+	excluded := Neighbors{}
+	for _, neighbor := range n {
+		if !neighbor.included(users) {
+			excluded = append(excluded, neighbor)
+		}
+	}
+	return excluded
+}

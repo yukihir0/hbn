@@ -23,3 +23,12 @@ func (n Neighbor) GetAllBookmarkCount() int {
 func (n Neighbor) GetSimilarity() float64 {
 	return float64(n.GetCommonBookmarkCount()) / float64(n.GetAllBookmarkCount())
 }
+
+func (n Neighbor) included(users []string) bool {
+	for _, user := range users {
+		if user == n.User {
+			return true
+		}
+	}
+	return false
+}
