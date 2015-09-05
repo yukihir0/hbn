@@ -13,10 +13,10 @@ func (n Neighbors) Swap(i, j int) {
 
 func (n Neighbors) Less(i, j int) bool {
 	var ret bool
-	if len(n[i].CommonBookmarks) == len(n[j].CommonBookmarks) {
+	if n[i].Similarity == n[j].Similarity {
 		ret = n[i].User < n[j].User
 	} else {
-		ret = len(n[i].CommonBookmarks) > len(n[j].CommonBookmarks)
+		ret = n[i].Similarity > n[j].Similarity
 	}
 	return ret
 }

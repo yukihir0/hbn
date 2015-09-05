@@ -13,90 +13,73 @@ go get github.com/yukihir0/hbn
 ### search neighbors by self bookmark.
 
 ```
+client := hbn.NewClient()
+
 user := "yukihir0"
-strategy := hbn.NewSelfStrategy(user)
-neighbors := hbn.SearchNeighbors(strategy)
+bookmarks := client.RequestBookmarks(user)
+neighbors := client.SearchNeighbors(bookmarks)
+excluded := neighbors.Exclude([]string{
+  user,
+})
+top := excluded.Top(20)
 
-for _, neighbor := range neighbors {
+for _, neighbor := range top {
   fmt.Printf(
     "[%s] : %.1f%% (%d/%d)\n",
     neighbor.User,
-    neighbor.GetSimilarity()*100,
-    neighbor.GetCommonBookmarkCount(),
-    neighbor.GetAllBookmarkCount(),
+    neighbor.Similarity*100,
+    len(neighbor.CommonBookmarks),
+    len(bookmarks),
   )
-}
-```
 
-### search neighbors by related bookmark.
-
-```
-user := "yukihir0"
-strategy := hbn.NewRelatedStrategy(user)
-neighbors := hbn.SearchNeighbors(strategy)
-
-for _, neighbor := range neighbors {
-  fmt.Printf(
-    "[%s] : %.1f%% (%d/%d)\n",
-    neighbor.User,
-    neighbor.GetSimilarity()*100,
-    neighbor.GetCommonBookmarkCount(),
-    neighbor.GetAllBookmarkCount(),
-  )
-}
-```
-
-### search neighbors by hot entry bookmark.
-
-```
-strategy := hbn.NewHotEntryStrategy()
-neighbors := hbn.SearchNeighbors(strategy)
-
-for _, neighbor := range neighbors {
-  fmt.Printf(
-    "[%s] : %.1f%% (%d/%d)\n",
-    neighbor.User,
-    neighbor.GetSimilarity()*100,
-    neighbor.GetCommonBookmarkCount(),
-    neighbor.GetAllBookmarkCount(),
-  )
+  for _, bookmark := range neighbor.CommonBookmarks {
+    fmt.Printf(" - %s\n", bookmark.Title)
+  }
+  fmt.Println()
 }
 ```
 
 ### search neighbors by favorite bookmark.
 
 ```
-user := "yukihir0"
-strategy := hbn.NewFavoriteStrategy(user)
-neighbors := hbn.SearchNeighbors(strategy)
+client := hbn.NewClient()
 
-for _, neighbor := range neighbors {
-  fmt.Printf(
-    "[%s] : %.1f%% (%d/%d)\n",
-    neighbor.User,
-    neighbor.GetSimilarity()*100,
-    neighbor.GetCommonBookmarkCount(),
-    neighbor.GetAllBookmarkCount(),
-  )
-}
+user := "yukihir0"
+bookmarks := client.RequestFavoriteBookmarks(user)
+neighbors := client.SearchNeighbors(bookmarks)
+...
+```
+
+### search neighbors by hot entry bookmark.
+
+```
+client := hbn.NewClient()
+
+bookmarks := client.RequestHotEntryBookmarks()
+neighbors := client.SearchNeighbors(bookmarks)
+...
 ```
 
 ### search neighbors by search bookmark.
 
 ```
-query := "golang"
-strategy := hbn.NewSearchStrategy(query)
-neighbors := hbn.SearchNeighbors(strategy)
+client := hbn.NewClient()
 
-for _, neighbor := range neighbors {
-  fmt.Printf(
-    "[%s] : %.1f%% (%d/%d)\n",
-    neighbor.User,
-    neighbor.GetSimilarity()*100,
-    neighbor.GetCommonBookmarkCount(),
-    neighbor.GetAllBookmarkCount(),
-  )
-}
+query := "golang"
+bookmarks := client.RequestSearchBookmarks(query)
+neighbors := client.SearchNeighbors(bookmarks)
+...
+```
+
+### search neighbors by related bookmark.
+
+```
+client := hbn.NewClient()
+
+user := "yukihir0"
+bookmarks := client.RequestRelatedBookmarks(user)
+neighbors := client.SearchNeighbors(bookmarks)
+...
 ```
 
 ## License

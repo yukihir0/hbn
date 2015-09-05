@@ -1,27 +1,20 @@
 package hbn
 
-import "github.com/yukihir0/hbapi"
-
 // Neighbor represents hatena bookmark neighbor.
 type Neighbor struct {
 	User            string
-	CommonBookmarks []hbapi.Entry
-	AllBookmarks    []hbapi.Entry
+	Similarity      float64
+	CommonBookmarks []Bookmark
 }
 
-// GetCommonBookmarkCount return common bookmark count.
-func (n Neighbor) GetCommonBookmarkCount() int {
-	return len(n.CommonBookmarks)
-}
-
-// GetAllBookmarkCount return all bookmark count.
-func (n Neighbor) GetAllBookmarkCount() int {
-	return len(n.AllBookmarks)
-}
-
-// GetSimilarity return similarity of neighbor.
-func (n Neighbor) GetSimilarity() float64 {
-	return float64(n.GetCommonBookmarkCount()) / float64(n.GetAllBookmarkCount())
+// NewDummyNeighbor return dummy of neighbor.
+func NewDummyNeighbor(user string, similarity float64) Neighbor {
+	dummy := Neighbor{
+		User:            user,
+		Similarity:      similarity,
+		CommonBookmarks: []Bookmark{},
+	}
+	return dummy
 }
 
 func (n Neighbor) included(users []string) bool {
