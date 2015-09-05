@@ -1,6 +1,9 @@
 package hbn
 
-import "sort"
+import (
+	"runtime"
+	"sort"
+)
 
 var empty struct{}
 
@@ -13,7 +16,7 @@ type Client struct {
 func NewClient() Client {
 	return Client{
 		totalPages:         1,
-		maxParallelRequest: 1,
+		maxParallelRequest: runtime.GOMAXPROCS(runtime.NumCPU()),
 		api:                NewHttpAPI(),
 	}
 }
